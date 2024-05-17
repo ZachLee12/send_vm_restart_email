@@ -1,0 +1,7 @@
+services:
+  send-email:
+    image: send-email
+    container_name: send-email-container
+    restart: always
+    env_file:
+      - .env
