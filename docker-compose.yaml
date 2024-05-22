@@ -2,6 +2,6 @@ services:
   send-email:
     image: send-email
     container_name: send-email-container
-    restart: always
+    restart: on-failure
     env_file:
       - .env

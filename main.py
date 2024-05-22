@@ -1,4 +1,3 @@
-
 import smtplib
 import ssl
 import os
@@ -12,7 +11,13 @@ load_dotenv(override=True)
 # EmailMessage config
 sender_email = os.getenv("SENDER_EMAIL")
 receiver_email = os.getenv("RECEIVER_EMAIL")
-# smartregion@hslu.ch
+email_password = os.getenv("EMAIL_PASSWORD")
+
+if sender_email is None or receiver_email is None or email_password is None:
+    raise ValueError(
+        "SENDER_EMAIL, RECEIVER_EMAIL and EMAIL_PASSWORD must be set in .env"
+    )
+
 
 subject = "[SRL VM]"
 template = f"""
@@ -27,11 +32,9 @@ email_message.set_content(template)
 
 try:
     with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as smtp:
-        smtp.login(sender_email, os.getenv("EMAIL_PASSWORD", "default"))
+        smtp.login(sender_email, email_password)
         smtp.sendmail(sender_email, receiver_email, email_message.as_string())
 
         print(chalk.green("[Email]: Email sent successfully"))
 except Exception as e:
-    print(f"{chalk.red('Failed to send email.')}: {e}")
-
-    
+    print(f"{chalk.red('Failed to send email. Reason:')} {e}")
