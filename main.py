@@ -12,8 +12,9 @@ load_dotenv(override=True)
 sender_email = os.getenv("SENDER_EMAIL")
 receiver_email = os.getenv("RECEIVER_EMAIL")
 email_password = os.getenv("EMAIL_PASSWORD")
+email_server = os.getenv("EMAIL_SERVER")
 
-if sender_email is None or receiver_email is None or email_password is None:
+if email_server is None or sender_email is None or receiver_email is None or email_password is None:
     raise ValueError(
         "SENDER_EMAIL, RECEIVER_EMAIL and EMAIL_PASSWORD must be set in .env"
     )
@@ -31,7 +32,7 @@ email_message["Subject"] = subject
 email_message.set_content(template)
 
 try:
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as smtp:
+    with smtplib.SMTP_SSL(email_server, 465, context=context) as smtp:
         smtp.login(sender_email, email_password)
         smtp.sendmail(sender_email, receiver_email, email_message.as_string())
 
